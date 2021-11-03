@@ -17,7 +17,7 @@ int res;
 //char b_fifo_fname[50];
 char p_fifo_fname[50];
 char* sint[5][2]={
-{"dor de barriga",  "estomatologia"},
+{"dor",  "estomatologia"},
 {"febre", "medicina geral"},
 {"visao",  "oftalmologista"},
 {"ouvido",  "otorrino"},

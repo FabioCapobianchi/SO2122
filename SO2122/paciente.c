@@ -55,6 +55,7 @@ if(b_fifo_fd == -1){
 
 printf("\nSr/a %s digite os sintomas: >",argv[1]);
 scanf("%s",utent.palavra);
+//fgets(utent.palavra,50,stdin);
 if(!strcasecmp(utent.palavra,"fim") || !strcasecmp(utent.palavra,"fimb")){
 write(b_fifo_fd, &utent, sizeof(utent));
 break;

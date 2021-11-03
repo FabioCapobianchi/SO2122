@@ -16,8 +16,11 @@ balcao_t balc;
 int res;
 //char b_fifo_fname[50];
 char p_fifo_fname[50];
-char* sint[5][2]={
-{"dor",  "estomatologia"},
+char* sint[SINT_MAX][2]={
+{"colica",  "estomatologia"},
+{"nauseas",  "estomatologia"},
+{"cefaleia",  "medicina geral"},
+{"dor de cabeca",  "medicina geral"},
 {"febre", "medicina geral"},
 {"visao",  "oftalmologista"},
 {"ouvido",  "otorrino"},
@@ -80,11 +83,14 @@ exit(EXIT_FAILURE);
       fprintf(stderr, "\nFIFO utente aberto para WRITE");
 /////////////////////////////
 
-      for(int i=0;i<5;i++){
+      for(int i=0;i<SINT_MAX;i++){
         if(!strcasecmp(utent.palavra,sint[i][0])){
            strcpy(balc.palavra,sint[i][1]);
            break;
-        }}
+        }else{
+          strcpy(balc.palavra,"Sintoma Desconhecido");
+        }
+      }
 ///////////////////////////////////
 
     res = write(p_fifo_fd, & balc, sizeof(balc));

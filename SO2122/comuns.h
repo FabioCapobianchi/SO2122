@@ -14,6 +14,7 @@
 #define  CLIENT_FIFO "utent_%d_fifo"
 
 #define TAM_MAX 50
+#define SINT_MAX 8
 
 typedef struct{//cliente -> servidor
  pid_t pid_utent;

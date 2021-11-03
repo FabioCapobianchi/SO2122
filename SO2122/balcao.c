@@ -10,14 +10,21 @@ int p_fifo_fd;
 
 int main(int argc, char **argv){
 
-pacient_t pacient;
+utent_t utent;
 balcao_t balc;
 
 int res;
 //char b_fifo_fname[50];
 char p_fifo_fname[50];
-//char * aux;
-printf("/nBalcao de atendimento/n");
+char* sint[5][2]={
+{"dor de barriga",  "estomatologia"},
+{"febre", "medicina geral"},
+{"visao",  "oftalmologista"},
+{"ouvido",  "otorrino"},
+{"lesao",  "ortopedista"}
+};
+
+fprintf(stdout,"\nBalcao de atendimento\n");
 res = mkfifo(SERVER_FIFO, 0777);
 if (res == -1){
 perror("\nmkfifo do FIFO Balcao deu erro");
@@ -33,47 +40,61 @@ exit(EXIT_FAILURE);
 }
  fprintf(stderr, "\nFIFO Balcao aberto para READ (+WRITE) bloqueante");
 
- memset(pacient.palavra, '\0', TAM_MAX);
+ memset(utent.palavra, '\0', TAM_MAX);
 
  while (1){
 
- res = read(b_fifo_fd, & pacient, sizeof(pacient));
- if(res < sizeof(pacient)){
+ res = read(b_fifo_fd, & utent, sizeof(utent));
+ if(res < sizeof(utent)){
    fprintf(stderr,"\nRecebida mensagem incompleta " "[bytes lidos: %d]", res);
    continue;
  }
 
- fprintf(stderr,"\nRecebido %s", pacient.palavra);
+ fprintf(stderr,"\nRecebido de %s sintoma %s",utent.nome, utent.palavra);
 
-  if(!strcasecmp(pacient.palavra, "fimb")){
+  if(!strcasecmp(utent.palavra, "fimb")){
 
   close(b_fifo_fd);
     unlink(SERVER_FIFO);
     exit(EXIT_SUCCESS);
 
   }
+  if(!strcasecmp(utent.palavra, "fim")){
+    close(p_fifo_fd);
+    fprintf(stderr,"\nFIFO utente %s fechado\n",utent.nome);
 
-   strcpy(balc.palavra,pacient.palavra);
-   balc.pid = pacient.pid_pacient;
-   fprintf(stderr, "\nbalcao %s", balc.palavra);
+  }
 
-  sprintf(p_fifo_fname, CLIENT_FIFO, pacient.pid_pacient);
+   strcpy(balc.palavra,utent.palavra);
+   strcpy(balc.pnome,utent.nome);
+   balc.pid = utent.pid_utent;
+   fprintf(stderr, "\nutente %s sintoma %s\n",balc.pnome, balc.palavra);
+
+  sprintf(p_fifo_fname, CLIENT_FIFO, utent.pid_utent);
 
   p_fifo_fd = open(p_fifo_fname, O_WRONLY);
 
   if(p_fifo_fd == -1)
     perror("\Erro no open - Ninguem quis a resposta");
     else{
-      fprintf(stderr, "\nFIFO cliente aberto para WRITE");
+      fprintf(stderr, "\nFIFO utente aberto para WRITE");
+/////////////////////////////
+
+      for(int i=0;i<5;i++){
+        if(!strcasecmp(utent.palavra,sint[i][0])){
+           strcpy(balc.palavra,sint[i][1]);
+           break;
+        }}
+///////////////////////////////////
 
     res = write(p_fifo_fd, & balc, sizeof(balc));
     if(res == sizeof(balc))
-      fprintf(stderr,"\nescreveu ao cliente %s\n",pacient.palavra);
+      fprintf(stderr,"\nescreveu ao utente %s\n",utent.palavra);
       else
-      perror("\nerro a escrever a balcao");
+      perror("\nerro a escrever ao utente");
 
     close(p_fifo_fd);
-    fprintf(stderr,"\nFIFO cliente fechado");
+    fprintf(stderr,"\nFIFO utente fechado\n");
     }
 
  }

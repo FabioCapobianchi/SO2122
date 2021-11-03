@@ -11,16 +11,18 @@
 
 #define  SERVER_FIFO "balc_fifo"
 
-#define  CLIENT_FIFO "pacient_%d_fifo"
+#define  CLIENT_FIFO "utent_%d_fifo"
 
 #define TAM_MAX 50
 
 typedef struct{//cliente -> servidor
- pid_t pid_pacient;
+ pid_t pid_utent;
+ char nome[TAM_MAX];
  char palavra[TAM_MAX];
-}pacient_t;
+}utent_t;
 
 typedef struct{//servidor -> cliente
   int pid;
+  char pnome[TAM_MAX];
  char palavra[TAM_MAX];
 }balcao_t;

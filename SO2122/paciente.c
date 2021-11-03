@@ -3,25 +3,31 @@
 #include <signal.h>
 
 
-int main(){
+int main(int argc, char **argv){
 
 int b_fifo_fd;
 int p_fifo_fd;
-pacient_t pacient;
+utent_t utent;
 balcao_t balc;
 char p_fifo_fname[25];
 int read_res;
 
-//Cria o FIFO do Paciente
-pacient.pid_pacient = getpid();
-sprintf(p_fifo_fname, CLIENT_FIFO, pacient.pid_pacient);
+ while(argc < 2){
+   fprintf(stdout,"Faltam parametros!!!.\n Ex: ./utente <nome utente>\n");
+   exit(EXIT_FAILURE);
+ }
+
+//Cria o FIFO do utente
+strcpy(utent.nome,argv[1]);
+utent.pid_utent = getpid();
+sprintf(p_fifo_fname, CLIENT_FIFO, utent.pid_utent);
 
 if(mkfifo(p_fifo_fname, 0777) == -1){
-perror("\nmkfifo do FIFO Paciente deu erro");
+perror("\nmkfifo do FIFO utente deu erro");
 exit(EXIT_FAILURE);
 }
 
-fprintf(stderr,"\nFIFO do Paciente criado");
+fprintf(stderr,"\nFIFO do utente criado");
 
 b_fifo_fd = open(SERVER_FIFO, O_WRONLY);
 if(b_fifo_fd == -1){
@@ -31,38 +37,36 @@ if(b_fifo_fd == -1){
 }
  fprintf(stderr,"\nFIFO do Balcao aberto WRITE / BLOCKING");
  //
- //
- //
- //
+
  p_fifo_fd = open(p_fifo_fname, O_RDWR);
  if(p_fifo_fd == -1){
- perror("\nErro ao abrir o FIFO do Paciente");
+ perror("\nErro ao abrir o FIFO do utente");
  close(p_fifo_fd);
  unlink(p_fifo_fname);
  exit(EXIT_FAILURE);
  }
 
 
- fprintf(stderr, "\nFIFO do Paciente aberto para READ(+Write) Block");
+ fprintf(stderr, "\nFIFO do utente aberto para READ(+Write) Block");
 
- memset(pacient.palavra, '\0', TAM_MAX);
+ memset(utent.palavra, '\0', TAM_MAX);
 
  while(1){
 
-printf("\nNome> ");
-scanf("%s",pacient.palavra);
-if(!strcasecmp(pacient.palavra,"fim" || !strcasecmp(pacient.palavra,"fimb"))){
-write(b_fifo_fd, &pacient, sizeof(pacient));
+printf("\nSr/a %s digite os sintomas: >",argv[1]);
+scanf("%s",utent.palavra);
+if(!strcasecmp(utent.palavra,"fim") || !strcasecmp(utent.palavra,"fimb")){
+write(b_fifo_fd, &utent, sizeof(utent));
 break;
 }
 // B) Envia ao balcao
-write(b_fifo_fd, &pacient, sizeof(pacient));
+write(b_fifo_fd, &utent, sizeof(utent));
 
 // c) recebe do balcao//////////////////////////////////
 
 read_res = read(p_fifo_fd, &balc, sizeof(balc));
 if(read_res == sizeof(balc))
-  printf("\nNome -> %s PID -> %d" , balc.palavra,balc.pid);
+  printf("\nNome -> %s Sintoma -> %s PID -> %d" , balc.pnome, balc.palavra,balc.pid);
 else
   printf("\nSem resposta do balcao" "[bytes lidos: %d]", read_res);
 }

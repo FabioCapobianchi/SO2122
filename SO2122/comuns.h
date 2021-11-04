@@ -9,12 +9,12 @@
 #include <sys/stat.h>
 #include <ctype.h>
 
-#define  SERVER_FIFO "balc_fifo"
-
+#define  BALC_FIFO "balc_fifo"
 #define  CLIENT_FIFO "utent_%d_fifo"
+#define  MEDIC_FIFO "medic_%d_fifo"
 
-#define TAM_MAX 50
-#define SINT_MAX 8
+#define  TAM_MAX 50
+#define  SINT_MAX 8
 
 typedef struct{//cliente -> servidor
  pid_t pid_utent;
@@ -25,5 +25,14 @@ typedef struct{//cliente -> servidor
 typedef struct{//servidor -> cliente
   int pid;
   char pnome[TAM_MAX];
- char palavra[TAM_MAX];
+  char palavra[TAM_MAX];
+
 }balcao_t;
+
+typedef struct{
+  pid_t pid_medic;
+  char mnome[TAM_MAX];
+  char espec[TAM_MAX];
+  char unome[TAM_MAX];
+  char pr[TAM_MAX];
+}medic_t;

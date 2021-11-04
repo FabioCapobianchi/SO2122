@@ -28,7 +28,7 @@ char* sint[SINT_MAX][2]={
 };
 
 fprintf(stdout,"\nBalcao de atendimento\n");
-res = mkfifo(SERVER_FIFO, 0777);
+res = mkfifo(BALC_FIFO, 0777);
 if (res == -1){
 perror("\nmkfifo do FIFO Balcao deu erro");
 exit(EXIT_FAILURE);
@@ -36,7 +36,7 @@ exit(EXIT_FAILURE);
 fprintf(stderr, "\nFIFO Balcao criado");
 
 
-b_fifo_fd = open(SERVER_FIFO, O_RDWR);
+b_fifo_fd = open(BALC_FIFO, O_RDWR);
 if (b_fifo_fd == -1){
 perror("\nmkErro ao abrir FIFO balcao(RDWR/blocking)");
 exit(EXIT_FAILURE);
@@ -58,7 +58,7 @@ exit(EXIT_FAILURE);
   if(!strcasecmp(utent.palavra, "fimb")){
 
   close(b_fifo_fd);
-    unlink(SERVER_FIFO);
+    unlink(BALC_FIFO);
     exit(EXIT_SUCCESS);
 
   }
@@ -105,7 +105,7 @@ exit(EXIT_FAILURE);
 
  }
  close(b_fifo_fd);
- unlink(SERVER_FIFO);
+ unlink(BALC_FIFO);
 
  return 0;
  }
